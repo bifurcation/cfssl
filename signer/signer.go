@@ -123,6 +123,14 @@ func ParseCertificateRequest(s Signer, csrBytes []byte, req *Subject) (template 
 				template.DNSNames = append(template.DNSNames, req.Hosts[i])
 			}
 		}
+	} else {
+		for i := range csr.DNSNames {
+			if ip := net.ParseIP(csr.DNSNames[i]); ip != nil {
+				template.IPAddresses = append(template.IPAddresses, ip)
+			} else {
+				template.DNSNames = append(template.DNSNames, csr.DNSNames[i])
+			}
+		}
 	}
 
 	return
